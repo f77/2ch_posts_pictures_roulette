@@ -24,14 +24,22 @@ class ImagePost
      */
     protected $combo;
 
+    /**
+     * Магнитное комбо.
+     * @var int
+     */
+    protected $magnetCombo;
 
 
-    public function __construct (int $_post_number, string $_image_url, string $_image_url_extension, int $_combo = NULL)
+
+    public function __construct (int $_post_number, string $_image_url, string $_image_url_extension,
+            int $_combo = NULL, int $_magnet_combo = NULL)
     {
         $this->postNumber        = $_post_number;
         $this->imageUrl          = $_image_url;
         $this->imageUrlExtension = $_image_url_extension;
         $this->combo             = $_combo;
+        $this->magnetCombo       = $_magnet_combo;
     }
 
     public function __toString (): string
@@ -64,6 +72,19 @@ class ImagePost
     public function getCombo ()
     {
         return $this->combo;
+    }
+
+    public function getMagnetCombo ()
+    {
+        return $this->magnetCombo;
+    }
+
+    /**
+     * Вернуть близость магнитного и реального комбо.
+     */
+    public function getComboDiff (): int
+    {
+        return \abs ($this->combo - $this->magnetCombo);
     }
 
 }

@@ -17,6 +17,7 @@ class Config
     protected $board;
     protected $threadNumber;
     protected $postsExclude;
+    protected $magnetRadius;
     protected $outJpgQuality;
     protected $templateName;
 
@@ -29,6 +30,7 @@ class Config
         $this->board          = $conf['Thread']['BOARD'];
         $this->threadNumber   = $conf['Thread']['THREAD_NUMBER'];
         $this->postsExclude   = $conf['Thread']['POSTS_EXCLUDE'];
+        $this->magnetRadius   = $conf['Working']['MAGNET_RADIUS'];
         $this->outJpgQuality  = $conf['Image']['OUT_JPG_QUALITY'];
         $this->templateName   = $conf['Template']['TEMPLATE_NAME'];
     }
@@ -54,6 +56,11 @@ class Config
     public function getPostsExclude (): array
     {
         return $this->postsExclude;
+    }
+
+    public function getMagnetRadius (): int
+    {
+        return $this->magnetRadius;
     }
 
     public function getOutJpgQuality (): int

@@ -21,7 +21,7 @@ trait LoaderUtils
             }
 
             $parsed   = $this->parseCurrentComboFilename ($file);
-            $result[] = new ImagePost ((int) $parsed[1], $file, \pathinfo ($file, \PATHINFO_EXTENSION), (int) $parsed[0]);
+            $result[] = new ImagePost ((int) $parsed[2], $file, \pathinfo ($file, \PATHINFO_EXTENSION), (int) $parsed[1], (int) $parsed[0]);
         }
 
         $imagePostsArray = new ImagePostsArray();
@@ -37,7 +37,8 @@ trait LoaderUtils
     protected function downloadPost (ImagePost $_post, ImageboardLoaderInterface $_loader, string $_download_dir)
     {
         $_loader->downloadPostImage ($_post, $_download_dir . '/'
-                . $_post->getCombo ()
+                . $_post->getMagnetCombo ()
+                . '.' . $_post->getCombo ()
                 . '.' . $_post->getPostNumber ()
                 . '.' . $_post->getImageUrlExtension ());
     }

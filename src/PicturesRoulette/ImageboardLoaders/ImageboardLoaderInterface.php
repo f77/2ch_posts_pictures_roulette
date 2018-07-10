@@ -27,8 +27,9 @@ interface ImageboardLoaderInterface
      *                                          (чтобы новые пикчи не перебивали старые).
 
      * @param Template $_template               Шаблон, чтобы можно было выявить новые посты.
+     * @param int       $_magnet_radius         Радиус магнита, в округе которого будут искаться комбо.
      */
-    public function getNewPoststWithImage (ImagePostsArray $_current_posts, Template $_template): ImagePostsArray;
+    public function getNewPoststWithImage (ImagePostsArray $_current_posts, Template $_template, int $_magnet_radius): ImagePostsArray;
 
     /**
      * Скачать изображение поста.

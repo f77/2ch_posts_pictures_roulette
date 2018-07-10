@@ -59,17 +59,101 @@ class ImagePostsArray
     }
 
     /**
-     * Получить пост по его комбо.
-     * 
-     * @param   string  $_combo         Комбо.
-     * 
-     * @return ImagePost|NULL   Пост или NULL, если такое комбо не найдено.
+     * Получить элемент по его индексу.
+     * @param   int             $_index Индекс элемента.
+     * @return  ImagePost|NULL          Элемент или NULL, если такого не найдено.
      */
-    public function getByCombo (string $_combo)
+    public function getByIndex (int $_index)
+    {
+        return ($this->arr[$_index] ?? NULL);
+    }
+
+    /**
+     * Удалить элемент по его индексу.
+     * @param   int             $_index Индекс элемента.
+     * @return  bool                    Был ли удален элемент или же такой индекс не найден.
+     */
+    public function deleteByIndex (int $_index): bool
+    {
+        $elem = $this->getByIndex ($_index);
+        if ($elem === NULL)
+        {
+            return FALSE;
+        }
+
+        unset ($this->arr[$_index]);
+        return TRUE;
+    }
+
+    /**
+     * Вернуть индекс элемента по его магнитному комбо.
+     * 
+     * @param   string      $_magnet_combo  Магнитное комбо.
+     * @return  int|NULL                    Индекс элемента или NULL, если такого магнитного комбо не найдено.
+     */
+    public function getIndexByMagnetCombo (string $_magnet_combo)
+    {
+        foreach ($this->arr as $key => $post)
+        {
+            if ($post->getMagnetCombo () == $_magnet_combo)
+            {
+                return $key;
+            }
+        }
+
+        return NULL;
+    }
+
+    /**
+     * Получить пост по его магнитному комбо.
+     * 
+     * @param   string  $_magnet_combo  Магнитное комбо.
+     * 
+     * @return ImagePost|NULL           Пост или NULL, если такое магнитное комбо не найдено.
+     */
+    public function getByMagnetCombo (string $_magnet_combo)
+    {
+        $index = $this->getIndexByMagnetCombo ($_magnet_combo);
+        if ($index === NULL)
+        {
+            return NULL;
+        }
+
+        return $this->getByIndex ($index);
+    }
+
+    /**
+     * Получить пост по его реальному комбо.
+     * 
+     * @param   string  $_real_combo    Реальное комбо.
+     * 
+     * @return ImagePost|NULL           Пост или NULL, если такое реальное комбо не найдено.
+     */
+    public function getByRealCombo (string $_real_combo)
     {
         foreach ($this->arr as $post)
         {
-            if ($post->getCombo () == $_combo)
+            if ($post->getCombo () == $_real_combo)
+            {
+                return $post;
+            }
+        }
+
+        return NULL;
+    }
+
+    /**
+     * Получить пост по его комбо.
+     * 
+     * @param   int     $_post_number   Номер поста.
+     * 
+     * @return ImagePost|NULL   Пост или NULL, если такого номера поста не найдено.
+     */
+    public function getByPostNumber (int $_post_number)
+    {
+        foreach ($this->arr as $post)
+        {
+            if ($post->getPostNumber () == $_post_number)
             {
                 return $post;
             }

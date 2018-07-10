@@ -151,15 +151,26 @@ class Router
         $loader  = $factory->getImageboardLoader ($this->config->getImageboardName (), $this->config->getBoard (), $this->config->getThreadNumber (), ...$this->config->getPostsExclude ());
 
         // Загрузим НОВЫЕ посты с изображениями.
-        $newPosts = $loader->getNewPoststWithImage ($this->currentPosts, $this->template);
+        $newPosts = $loader->getNewPoststWithImage ($this->currentPosts, $this->template, $this->config->getMagnetRadius ());
+
+        echo '<pre>New Posts:';
+        print_r ($newPosts);
+        echo '</pre>';
 
         // Скачаем их пикчи в папку.
         echo "New Posts:<br>\n";
         $i = 0;
         foreach ($newPosts->getAll () as $post)
         {
+            // Если с текущим магнитным комбо есть новый пост, то старый удаляем.
+            $oldPost = $this->currentPosts->getByMagnetCombo ($post->getMagnetCombo ());
+            if ($oldPost !== NULL)
+            {
+                \unlink ($oldPost->getImageUrl ());
+            }
+
             ++$i;
-            echo $i . ') Loading <b>' . $post->getCombo () . '</b>...';
+            echo $i . ') Loading <b>' . $post->getMagnetCombo () . '</b> (' . $post->getCombo () . ')...';
             $this->downloadPost ($post, $loader, Config::PATH_IMAGES_TEMP);
             echo " OK.<br>\n";
         }

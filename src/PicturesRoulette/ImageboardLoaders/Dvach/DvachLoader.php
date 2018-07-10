@@ -76,7 +76,7 @@ class DvachLoader implements ImageboardLoaderInterface
         return $imagePostsArray;
     }
 
-    public function getNewPoststWithImage (ImagePostsArray $_current_posts, Template $_template): ImagePostsArray
+    public function getNewPoststWithImage (ImagePostsArray $_current_posts, Template $_template, int $_magnet_radius): ImagePostsArray
     {
         $resultImagePostsArray = new ImagePostsArray();
         $allPostsArr           = $this->getAllPoststWithImage ()->getAll ();
@@ -87,26 +87,64 @@ class DvachLoader implements ImageboardLoaderInterface
             for ($i = \strlen ((string) $post->getPostNumber ()); $i > 0; $i--)
             {
                 // Получаем последние несколько цифр номера поста.
-                $combo = $this->getLastNSymbolsFromPostNumber ($post->getPostNumber (), $i);
+                $realCombo = $this->getLastNSymbolsFromPostNumber ($post->getPostNumber (), $i);
 
-                // Если такого комбо в шаблоне вообще нет.
-                if (empty ($_template->getCellByCombo ($combo)))
+                // Обходим радиус магнита, все больше удаляясь по сторонам от фактического комбо.
+                for ($currentRadius = 0; $currentRadius <= $_magnet_radius; $currentRadius++)
                 {
-                    continue;
-                }
-                // Если такое комбо или номер поста уже есть в текущих постах.
-                if ($_current_posts->getByComboOrPostNumber ($combo, $post->getPostNumber ()) !== NULL)
-                {
-                    continue;
-                }
-                // Если такое комбо или номер поста уже есть в обнаруженных прямо сейчас постах.
-                if ($resultImagePostsArray->getByComboOrPostNumber ($combo, $post->getPostNumber ()) !== NULL)
-                {
-                    continue;
-                }
+                    foreach ([-1, 1] as $direction)
+                    {
+                        $magnetCombo = $realCombo + ($currentRadius * $direction);
 
-                // Если все гуд, добавляем пост.
-                $resultImagePostsArray->add (new ImagePost ($post->getPostNumber (), $post->getImageUrl (), $post->getImageUrlExtension (), $combo));
+                        // Если такого комбо в шаблоне вообще нет.
+                        if (empty ($_template->getCellByCombo ($magnetCombo)))
+                        {
+                            continue;
+                        }
+                        // Если такой номер поста уже задейстован.
+                        if ($_current_posts->getByPostNumber ($post->getPostNumber ()) !== NULL || $resultImagePostsArray->getByPostNumber ($post->getPostNumber ()) !== NULL)
+                        {
+                            continue;
+                        }
+
+                        // Если текущее магнитное комбо есть в имеющихся файлах,
+                        // И комбо-разница текущего поста не больше чем того, то продолжаем.
+                        $oldCurrentPostIndex = $_current_posts->getIndexByMagnetCombo ($magnetCombo);
+                        if ($oldCurrentPostIndex !== NULL)
+                        {
+                            $oldCurrentPost = $_current_posts->getByIndex ($oldCurrentPostIndex);
+                            if ($oldCurrentPost->getComboDiff () <= $currentRadius)
+                            {
+                                continue;
+                            }
+                        }
+
+                        // Если текущее магнитное комбо уже есть в текущих постах,
+                        // Вычисляем его близость к реальному и заменяем, если надо.
+                        $oldResultPostIndex = $resultImagePostsArray->getIndexByMagnetCombo ($magnetCombo);
+                        if ($oldResultPostIndex !== NULL)
+                        {
+                            $oldResultPost = $resultImagePostsArray->getByIndex ($oldResultPostIndex);
+                            if ($post->getComboDiff () < $oldResultPost->getComboDiff ())
+                            {
+                                // Если у текущего поста комбо меньше расходится с реальным, чем у старого
+                                // То удаляем старый.
+                                $resultImagePostsArray->deleteByIndex ($oldResultPostIndex);
+                            }
+                            else
+                            {
+                                // А если близость больше, то продолжаем.
+                                continue;
+                            }
+                        }
+
+                        // Если все гуд, добавляем пост.
+                        $resultImagePostsArray->add (new ImagePost ($post->getPostNumber (), $post->getImageUrl (), $post->getImageUrlExtension (), $realCombo, $magnetCombo));
+
+                        // Выходим из всех циклов.
+                        break 3;
+                    }
+                }
             }
         }
 
