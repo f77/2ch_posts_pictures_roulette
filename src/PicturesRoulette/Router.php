@@ -193,7 +193,7 @@ class Router
         // Обходим массив координат и вставляем картинки.
         foreach ($this->template->getCoordinatesCells () as $comb => $value)
         {
-            $post = $this->currentPosts->getByCombo ($comb);
+            $post = $this->currentPosts->getByRealCombo ($comb);
             if ($post === NULL)
             {
                 continue;
