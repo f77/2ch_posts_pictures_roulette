@@ -153,10 +153,6 @@ class Router
         // Загрузим НОВЫЕ посты с изображениями.
         $newPosts = $loader->getNewPoststWithImage ($this->currentPosts, $this->template, $this->config->getMagnetRadius ());
 
-        echo '<pre>New Posts:';
-        print_r ($newPosts);
-        echo '</pre>';
-
         // Скачаем их пикчи в папку.
         echo "New Posts:<br>\n";
         $i = 0;
@@ -191,9 +187,10 @@ class Router
 
         // Копируем. Очередность можно чередовать. Чтобы управлять слоями изображения.
         // Обходим массив координат и вставляем картинки.
+        $i = 0;
         foreach ($this->template->getCoordinatesCells () as $comb => $value)
         {
-            $post = $this->currentPosts->getByRealCombo ($comb);
+            $post = $this->currentPosts->getByMagnetCombo ($comb);
             if ($post === NULL)
             {
                 continue;
@@ -201,10 +198,15 @@ class Router
 
             try
             {
+                ++$i;
+                echo $i . ') <b>' . $post->getMagnetCombo () . '</b>...';
+
                 $fileInTarget = $post->getImageUrl ();
                 $imgInTarget  = $this->imagecreatefromfile ($fileInTarget);
                 list ($widthInTarget, $heightInTarget) = \getimagesize ($fileInTarget);
                 \imagecopyresampled ($out, $imgInTarget, $value[0], $value[1], 0, 0, $this->template->getCellSize ()[0], $this->template->getCellSize ()[1], $widthInTarget, $heightInTarget);
+
+                echo " OK.<br>\n";
             }
             catch (\Throwable $t)
             {
