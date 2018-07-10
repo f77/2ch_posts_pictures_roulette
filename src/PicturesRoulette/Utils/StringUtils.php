@@ -39,4 +39,9 @@ trait StringUtils
         return ((int) \mb_substr ($_postNumber, (-1) * $_last_count));
     }
 
+    function getLastNSymbolsFromString (string $_str, int $_last_count): string
+    {
+        return (\mb_substr ($_str, (-1) * $_last_count));
+    }
+
 }

@@ -37,6 +37,11 @@ class ImagePostsArray
         return $this->arr;
     }
 
+    public function getSize (): int
+    {
+        return \count ($this->arr);
+    }
+
     /**
      * Получить пост по его комбо или номеру поста.
      * 
@@ -95,7 +100,8 @@ class ImagePostsArray
     {
         foreach ($this->arr as $key => $post)
         {
-            if ($post->getMagnetCombo () == $_magnet_combo)
+            // === очень важно строгое сравнение.
+            if ($post->getMagnetCombo () === $_magnet_combo)
             {
                 return $key;
             }

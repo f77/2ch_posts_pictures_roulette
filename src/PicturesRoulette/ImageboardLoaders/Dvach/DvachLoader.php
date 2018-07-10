@@ -81,23 +81,31 @@ class DvachLoader implements ImageboardLoaderInterface
         $resultImagePostsArray = new ImagePostsArray();
         $allPostsArr           = $this->getAllPoststWithImage ()->getAll ();
 
+//        echo '<pre>allPosts:';
+//        print_r ($allPostsArr);
+//        echo '</pre>';
+
         foreach ($allPostsArr as $post)
         {
             // Пытаемся найти комбо, начиная с самых крупных.
             for ($i = \strlen ((string) $post->getPostNumber ()); $i > 0; $i--)
             {
                 // Получаем последние несколько цифр номера поста.
-                $realCombo = $this->getLastNSymbolsFromPostNumber ($post->getPostNumber (), $i);
+//                $realCombo = $this->getLastNSymbolsFromPostNumber ($post->getPostNumber (), $i);
+                $realComboString = $this->getLastNSymbolsFromString ($post->getPostNumber (), $i);
 
                 // Обходим радиус магнита, все больше удаляясь по сторонам от фактического комбо.
                 for ($currentRadius = 0; $currentRadius <= $_magnet_radius; $currentRadius++)
                 {
                     foreach ([-1, 1] as $direction)
                     {
-                        $magnetCombo = $realCombo + ($currentRadius * $direction);
 
+                        //$magnetCombo = $realCombo + ($currentRadius * $direction);
+                        $magnetComboString = $this->getLastNSymbolsFromString (($post->getPostNumber () + ($currentRadius * $direction)), $i);
+
+//                        echo '#' . $post->getPostNumber () . '#' . $magnetComboString . '#<br>';
                         // Если такого комбо в шаблоне вообще нет.
-                        if (empty ($_template->getCellByCombo ($magnetCombo)))
+                        if (empty ($_template->getCellByCombo ($magnetComboString)))
                         {
                             continue;
                         }
@@ -109,7 +117,7 @@ class DvachLoader implements ImageboardLoaderInterface
 
                         // Если текущее магнитное комбо есть в имеющихся файлах,
                         // И комбо-разница текущего поста не больше чем того, то продолжаем.
-                        $oldCurrentPostIndex = $_current_posts->getIndexByMagnetCombo ($magnetCombo);
+                        $oldCurrentPostIndex = $_current_posts->getIndexByMagnetCombo ($magnetComboString);
                         if ($oldCurrentPostIndex !== NULL)
                         {
                             $oldCurrentPost = $_current_posts->getByIndex ($oldCurrentPostIndex);
@@ -121,7 +129,7 @@ class DvachLoader implements ImageboardLoaderInterface
 
                         // Если текущее магнитное комбо уже есть в текущих постах,
                         // Вычисляем его близость к реальному и заменяем, если надо.
-                        $oldResultPostIndex = $resultImagePostsArray->getIndexByMagnetCombo ($magnetCombo);
+                        $oldResultPostIndex = $resultImagePostsArray->getIndexByMagnetCombo ($magnetComboString);
                         if ($oldResultPostIndex !== NULL)
                         {
                             $oldResultPost = $resultImagePostsArray->getByIndex ($oldResultPostIndex);
@@ -139,7 +147,7 @@ class DvachLoader implements ImageboardLoaderInterface
                         }
 
                         // Если все гуд, добавляем пост.
-                        $resultImagePostsArray->add (new ImagePost ($post->getPostNumber (), $post->getImageUrl (), $post->getImageUrlExtension (), $realCombo, $magnetCombo));
+                        $resultImagePostsArray->add (new ImagePost ($post->getPostNumber (), $post->getImageUrl (), $post->getImageUrlExtension (), $realComboString, $magnetComboString));
 
                         // Выходим из всех циклов.
                         break 3;

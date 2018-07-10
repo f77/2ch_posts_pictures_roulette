@@ -21,7 +21,7 @@ trait LoaderUtils
             }
 
             $parsed   = $this->parseCurrentComboFilename ($file);
-            $result[] = new ImagePost ((int) $parsed[2], $file, \pathinfo ($file, \PATHINFO_EXTENSION), (int) $parsed[1], (int) $parsed[0]);
+            $result[] = new ImagePost ((int) $parsed[2], $file, \pathinfo ($file, \PATHINFO_EXTENSION), $parsed[1], $parsed[0]);
         }
 
         $imagePostsArray = new ImagePostsArray();

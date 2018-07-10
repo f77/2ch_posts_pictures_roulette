@@ -166,7 +166,9 @@ class Router
             }
 
             ++$i;
-            echo $i . ') Loading <b>' . $post->getMagnetCombo () . '</b> (' . $post->getCombo () . ')...';
+            echo $i . '/' . $newPosts->getSize ()
+            . ') Loading <b>' . $post->getMagnetCombo () . '</b> (' . $post->getCombo () . ')...';
+
             $this->downloadPost ($post, $loader, Config::PATH_IMAGES_TEMP);
             echo " OK.<br>\n";
         }
@@ -199,7 +201,8 @@ class Router
             try
             {
                 ++$i;
-                echo $i . ') <b>' . $post->getMagnetCombo () . '</b>...';
+                echo $i . '/' . $this->currentPosts->getSize ()
+                . ') <b>' . $post->getMagnetCombo () . '</b> (' . $post->getCombo () . ')...';
 
                 $fileInTarget = $post->getImageUrl ();
                 $imgInTarget  = $this->imagecreatefromfile ($fileInTarget);
@@ -217,6 +220,7 @@ class Router
         }
 
         // Накладываем шаблон.
+        echo "<br>Generating result image...<br>\n";
         \imagecopyresampled ($out, $imgInBase, 0, 0, 0, 0, $widthInBase, $heightInBase, $widthInBase, $heightInBase);
 
         // Сохраняем.

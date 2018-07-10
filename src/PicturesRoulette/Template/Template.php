@@ -50,11 +50,11 @@ class Template
     /**
      * Получить массив ячейки по комбинации или пустой массив, если такой комбинации нет.
      * 
-     * @param   int     $_combo Комбинация - последние несколько цифр поста.
+     * @param   string  $_combo Комбинация - последние несколько цифр поста.
      * 
      * @return  array           Массив с координатами левого верхнего угла ячейки на шаблоне.
      */
-    public function getCellByCombo (int $_combo): array
+    public function getCellByCombo (string $_combo): array
     {
         return ($this->coordinatesCells[$_combo] ?? []);
     }

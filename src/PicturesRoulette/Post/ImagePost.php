@@ -33,7 +33,7 @@ class ImagePost
 
 
     public function __construct (int $_post_number, string $_image_url, string $_image_url_extension,
-            int $_combo = NULL, int $_magnet_combo = NULL)
+            string $_combo = NULL, string $_magnet_combo = NULL)
     {
         $this->postNumber        = $_post_number;
         $this->imageUrl          = $_image_url;
@@ -84,7 +84,7 @@ class ImagePost
      */
     public function getComboDiff (): int
     {
-        return \abs ($this->combo - $this->magnetCombo);
+        return \abs ((int) $this->combo - (int) $this->magnetCombo);
     }
 
 }
