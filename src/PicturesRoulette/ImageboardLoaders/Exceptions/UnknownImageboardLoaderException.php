@@ -6,5 +6,5 @@ use PicturesRoulette\PicturesRouletteException;
 
 class UnknownImageboardLoaderException extends PicturesRouletteException
 {
-    
+
 }

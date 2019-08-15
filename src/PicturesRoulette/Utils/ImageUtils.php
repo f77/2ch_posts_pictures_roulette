@@ -4,32 +4,34 @@ namespace PicturesRoulette\Utils;
 
 trait ImageUtils
 {
-
     /**
      * Открыть изображение любого типа.
      * http://stackoverflow.com/questions/10233577/create-image-from-url-any-file-type
+     *
+     * @param string $_filename
+     *
+     * @return resource
+     * @throws \InvalidArgumentException
      */
-    function imagecreatefromfile ($_filename)
+    public function imagecreatefromfile(string $_filename)
     {
-        if (!\file_exists ($_filename))
-        {
+        if (!\file_exists($_filename)) {
             throw new \InvalidArgumentException ('File "' . $_filename . '" not found.');
         }
-        switch (\strtolower (\pathinfo ($_filename, \PATHINFO_EXTENSION)))
-        {
+        switch (\strtolower(\pathinfo($_filename, \PATHINFO_EXTENSION))) {
             case 'jpg':
             case 'jpeg':
-                return \imagecreatefromjpeg ($_filename);
+                return \imagecreatefromjpeg($_filename);
 
             case 'png':
-                return \imagecreatefrompng ($_filename);
+                return \imagecreatefrompng($_filename);
 
             case 'gif':
-                return \imagecreatefromgif ($_filename);
+                return \imagecreatefromgif($_filename);
 
             default:
-                throw new \InvalidArgumentException ('File "' . $_filename . '" is not valid jpg, png or gif image.');
+                throw new \InvalidArgumentException ('File "' . $_filename
+                    . '" is not valid jpg, png or gif image.');
         }
     }
-
 }

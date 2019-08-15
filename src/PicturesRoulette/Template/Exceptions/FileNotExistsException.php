@@ -6,5 +6,5 @@ use PicturesRoulette\PicturesRouletteException;
 
 class FileNotExistsException extends PicturesRouletteException
 {
-    
+
 }

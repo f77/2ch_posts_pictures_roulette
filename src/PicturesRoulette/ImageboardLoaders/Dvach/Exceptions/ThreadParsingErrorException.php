@@ -6,5 +6,5 @@ use PicturesRoulette\PicturesRouletteException;
 
 class ThreadParsingErrorException extends PicturesRouletteException
 {
-    
+
 }

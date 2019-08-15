@@ -7,9 +7,19 @@ namespace PicturesRoulette\Post;
  */
 class ImagePost
 {
-
+    /**
+     * @var int
+     */
     protected $postNumber;
+
+    /**
+     * @var string
+     */
     protected $imageUrl;
+
+    /**
+     * @var string
+     */
     protected $imageUrlExtension;
 
     /**
@@ -19,62 +29,93 @@ class ImagePost
      * Далее трипл может выпасть еще раз, но прежний трипл он не заменит, теперь это просто дабл.
      * Номера постов могут быть разными, но по результату вычисления оба будут триплом.
      * Поэтому надо сохранять комбо при создании объекта.
-     * 
+     *
      * @var int
      */
     protected $combo;
 
     /**
      * Магнитное комбо.
+     *
      * @var int
      */
     protected $magnetCombo;
 
 
-
-    public function __construct (int $_post_number, string $_image_url, string $_image_url_extension,
-            string $_combo = NULL, string $_magnet_combo = NULL)
-    {
-        $this->postNumber        = $_post_number;
-        $this->imageUrl          = $_image_url;
+    /**
+     * ImagePost constructor.
+     *
+     * @param int         $_post_number
+     * @param string      $_image_url
+     * @param string      $_image_url_extension
+     * @param string|null $_combo
+     * @param string|null $_magnet_combo
+     */
+    public function __construct(
+        int $_post_number,
+        string $_image_url,
+        string $_image_url_extension,
+        string $_combo = null,
+        string $_magnet_combo = null
+    ) {
+        $this->postNumber = $_post_number;
+        $this->imageUrl = $_image_url;
         $this->imageUrlExtension = $_image_url_extension;
-        $this->combo             = $_combo;
-        $this->magnetCombo       = $_magnet_combo;
+        $this->combo = $_combo;
+        $this->magnetCombo = $_magnet_combo;
     }
 
-    public function __toString (): string
+    /**
+     * @return string
+     */
+    public function __toString(): string
     {
         return "[\n"
-                . "    postNumber:          " . $this->getPostNumber () . ",\n"
-                . "    imageUrl:            " . $this->getImageUrl () . ",\n"
-                . "    imageUrlExtension:   " . $this->getImageUrlExtension () . "\n"
-                . "]";
+            . '    postNumber:          ' . $this->getPostNumber() . ",\n"
+            . '    imageUrl:            ' . $this->getImageUrl() . ",\n"
+            . '    imageUrlExtension:   ' . $this->getImageUrlExtension() . "\n"
+            . ']';
     }
 
     //--------------------------------------------------------------------------
     // Геттеры.
     //--------------------------------------------------------------------------
-    public function getPostNumber (): int
+    /**
+     * @return int
+     */
+    public function getPostNumber(): int
     {
         return $this->postNumber;
     }
 
-    public function getImageUrl (): string
+    /**
+     * @return string
+     */
+    public function getImageUrl(): string
     {
         return $this->imageUrl;
     }
 
-    public function getImageUrlExtension (): string
+    /**
+     * @return string
+     */
+    public function getImageUrlExtension(): string
     {
         return $this->imageUrlExtension;
     }
 
-    public function getCombo ()
+    /**
+     * @return int|string|null
+     */
+    public function getCombo()
     {
         return $this->combo;
     }
 
-    public function getMagnetCombo ()
+    /**
+     * @return int|string|null
+     */
+    public function getMagnetCombo()
     {
         return $this->magnetCombo;
     }
@@ -82,9 +123,8 @@ class ImagePost
     /**
      * Вернуть близость магнитного и реального комбо.
      */
-    public function getComboDiff (): int
+    public function getComboDiff(): int
     {
-        return \abs ((int) $this->combo - (int) $this->magnetCombo);
+        return \abs((int)$this->combo - (int)$this->magnetCombo);
     }
-
 }
